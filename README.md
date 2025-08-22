@@ -19,8 +19,6 @@ The system is built as a set of independent APIs (Auth, Users, Links) and a WebA
 
 ## 📂 Project Structure
 
-
-
 src/
 ├── Auth/ # Authentication API (JWT, refresh tokens, Identity)
 ├── Users/ # Users API (profile, bio, avatar, theme, handle)
