@@ -1,4 +1,3 @@
-📄 README.md (Project-wide)
 # Branchly
 
 **Branchly** is a modern open-source **Link-in-bio platform** built with **.NET 9**.  
