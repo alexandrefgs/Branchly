@@ -19,26 +19,10 @@ The system is built as a set of independent APIs (Auth, Users, Links) and a WebA
 
 ## 📂 Project Structure
 
-src/
-
-├── Auth/ # Authentication API (JWT, refresh tokens, Identity)
-├── Users/ # Users API (profile, bio, avatar, theme, handle)
-├── Links/ # Links API (link CRUD, shortlinks, redirects, analytics)
-└── WebApp/ # Razor-based dashboard + public profile pages
-
-tests/
-
-├── Auth.Tests/
-├── Users.Tests/
-└── Links.Tests/
-
-
 - **Auth API** → handles authentication, registration, login, refresh, logout  
 - **Users API** → profile management (handle, bio, avatar, themes, settings)  
 - **Links API** → link CRUD, shortlinks, redirect service, analytics pipeline  
 - **WebApp** → user dashboard + public bio page (`branchly.me/@username`)  
-
----
 
 ## 🛠 Tech Stack
 
