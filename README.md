@@ -87,14 +87,14 @@ docker compose up --build
 
 ### 📖 Roadmap
 
- **- Authentication API (JWT, refresh, logout)**
- **- User Profiles (handles, themes, avatars)**
- **- Links CRUD + Shortlinks**
- **- Analytics pipeline**
- **- WebApp Dashboard (profile editor + analytics)**
- **- Public Bio Pages**
- **- Dockerized deployment (SQL Server + Redis)**
- **- CI/CD pipeline (GitHub Actions)**
+ - Authentication API (JWT, refresh, logout) ✔️
+ - User Profiles (handles, themes, avatars)
+ - Links CRUD + Shortlinks
+ - Analytics pipeline
+ - WebApp Dashboard (profile editor + analytics)
+ - Public Bio Pages
+ - Dockerized deployment (SQL Server + Redis)
+ - CI/CD pipeline (GitHub Actions)
 
 ### 🤝 Contributing
 
