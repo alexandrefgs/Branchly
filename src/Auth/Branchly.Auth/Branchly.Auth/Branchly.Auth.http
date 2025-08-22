@@ -1,0 +1,6 @@
+@Branchly.Auth_HostAddress = http://localhost:5214
+
+GET {{Branchly.Auth_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
