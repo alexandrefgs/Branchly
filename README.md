@@ -64,7 +64,7 @@ tests/
 ### Running with Docker
 ```bash
 docker compose up --build
-
+```
 
 Services will be available at:
 
