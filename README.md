@@ -18,8 +18,6 @@ The system is built as a set of independent APIs (Auth, Users, Links) and a WebA
 - 🧪 **Unit & Integration Tests** with EF Core in-memory and testcontainers
 - 🐳 **Docker Compose** ready — runs all services + SQL Server + Redis
 
----
-
 ## 📂 Project Structure
 
 
@@ -66,72 +64,51 @@ tests/
 docker compose up --build
 ```
 
-Services will be available at:
+### Services will be available at:
 
-Auth API → http://localhost:5001/swagger
+- Auth API → http://localhost:5001/swagger
+- Users API → http://localhost:5002/swagger
+- Links API → http://localhost:5003/swagger
+- WebApp → http://localhost:5000
 
-Users API → http://localhost:5002/swagger
+### 🔐 Authentication Flow
 
-Links API → http://localhost:5003/swagger
+- User registers via Auth API → /v1/auth/register
+- Logs in with credentials → receives Access Token + Refresh Token
+- Access protected endpoints with Authorization: Bearer <access_token>
+- Refresh token flow rotates tokens securely
+- Logout revokes refresh tokens
 
-WebApp → http://localhost:5000
+### 📊 Analytics Flow
 
-🔐 Authentication Flow
+- Every redirect /r/{code} generates a click event
+- Events are stored and aggregated daily
+- Dashboard shows totals by link, referrer, device, country, date range
 
-User registers via Auth API → /v1/auth/register
+### 📖 Roadmap
 
-Logs in with credentials → receives Access Token + Refresh Token
+ **- Authentication API (JWT, refresh, logout)**
+ **- User Profiles (handles, themes, avatars)**
+ **- Links CRUD + Shortlinks**
+ **- Analytics pipeline**
+ **- WebApp Dashboard (profile editor + analytics)**
+ **- Public Bio Pages**
+ **- Dockerized deployment (SQL Server + Redis)**
+ **- CI/CD pipeline (GitHub Actions)**
 
-Access protected endpoints with Authorization: Bearer <access_token>
-
-Refresh token flow rotates tokens securely
-
-Logout revokes refresh tokens
-
-📊 Analytics Flow
-
-Every redirect /r/{code} generates a click event
-
-Events are stored and aggregated daily
-
-Dashboard shows totals by link, referrer, device, country, date range
-
-📖 Roadmap
-
- Authentication API (JWT, refresh, logout)
-
- User Profiles (handles, themes, avatars)
-
- Links CRUD + Shortlinks
-
- Analytics pipeline
-
- WebApp Dashboard (profile editor + analytics)
-
- Public Bio Pages
-
- Dockerized deployment (SQL Server + Redis)
-
- CI/CD pipeline (GitHub Actions)
-
-🤝 Contributing
+### 🤝 Contributing
 
 Contributions are welcome!
 Please open an issue or pull request if you’d like to help improve Branchly.
 
-📜 License
+### 📜 License
 
 This project is licensed under the MIT License.
 Feel free to use it for personal or commercial projects.
 
-🌟 Acknowledgements
-
-.NET
-
-Entity Framework Core
-
-Swagger / Swashbuckle
-
-Redis
-
-Docker
+### 🌟 Acknowledgements
+**- .NET**
+**- Entity Framework Core**
+**- Swagger / Swashbuckle**
+**- Redis**
+**- Docker**
