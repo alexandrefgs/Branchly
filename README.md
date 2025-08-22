@@ -87,7 +87,7 @@ docker compose up --build
 
 ### 📖 Roadmap
 
- - Authentication API (JWT, refresh, logout) ✔️
+ - **Authentication API (JWT, refresh, logout)** ✔️
  - User Profiles (handles, themes, avatars)
  - Links CRUD + Shortlinks
  - Analytics pipeline
