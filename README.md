@@ -6,6 +6,7 @@
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)
 ![GitHub last commit](https://img.shields.io/github/last-commit/alexandrefgs/Branchly)
 ![GitHub issues](https://img.shields.io/github/issues/alexandrefgs/Branchly)
+![Swagger UI Screenshot](docs/images/swagger.png)
 
 **Branchly** is a modern open-source **Link-in-bio platform** built with **.NET 9**.  
 It allows users to create a customizable profile page with multiple links, shortlinks, and analytics.  
