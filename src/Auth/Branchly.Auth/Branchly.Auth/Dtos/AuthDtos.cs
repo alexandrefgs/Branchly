@@ -6,3 +6,6 @@ public record LoginRequest(string Email, string Password);
 public record AuthResponse(string AccessToken, int ExpiresIn, string RefreshToken, string Scope);
 public record RefreshRequest(string RefreshToken);
 public record LogoutRequest(string RefreshToken);
+public record VerifyEmailQuery(string UserId, string Token);
+public record ForgotPasswordRequest(string Email);
+public record ResetPasswordRequest(string UserId, string Token, string NewPassword);
