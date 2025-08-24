@@ -77,16 +77,15 @@ docker compose up --build
 - Events are stored and aggregated daily
 - Dashboard shows totals by link, referrer, device, country, date range
 
-### 📖 Roadmap
+## 🚀 Roadmap
 
- - **Authentication API (JWT, refresh, logout)** ✔️
- - User Profiles (handles, themes, avatars)
- - Links CRUD + Shortlinks
- - Analytics pipeline
- - WebApp Dashboard (profile editor + analytics)
- - Public Bio Pages
- - Dockerized deployment (SQL Server + Redis)
- - CI/CD pipeline (GitHub Actions)
+- [x] Authentication API (JWT, RefreshTokens, Swagger)
+- [ ] Email verification
+- [ ] Forgot password
+- [ ] User Profiles (handle, themes, avatar)
+- [ ] Links CRUD + shortlinks
+- [ ] Analytics dashboard
+- [ ] WebApp Dashboard (profile editor + analytics)
 
 ### 🤝 Contributing
 
