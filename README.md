@@ -1,5 +1,10 @@
 # Branchly
 
+![.NET 9](https://img.shields.io/badge/.NET-9-blue)
+![License](https://img.shields.io/github/license/alexandrefgs/Branchly)
+![Docker Compose](https://img.shields.io/badge/docker--compose-ready-blue)
+![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)
+
 **Branchly** is a modern open-source **Link-in-bio platform** built with **.NET 9**.  
 It allows users to create a customizable profile page with multiple links, shortlinks, and analytics.  
 The system is built as a set of independent APIs (Auth, Users, Links) and a WebApp (dashboard + public pages), following **Clean Architecture** and best practices for production-ready systems.
