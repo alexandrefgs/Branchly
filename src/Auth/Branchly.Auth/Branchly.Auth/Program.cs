@@ -2,83 +2,111 @@ using System.Text;
 using Branchly.Auth.Data;
 using Branchly.Auth.Models;
 using Branchly.Auth.Services;
-using Branchly.Auth.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
-builder.Services.AddDbContext<AuthDbContext>(o =>
-    o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+// DbContext (SQL Server)
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlServer(config.GetConnectionString("Default")));
 
-var identity = builder.Services.AddIdentityCore<ApplicationUser>(o =>
+// Identity
+builder.Services.AddIdentityCore<ApplicationUser>(options =>
 {
-    o.User.RequireUniqueEmail = true;
-    o.Password.RequiredLength = 8;
-    o.Password.RequireDigit = true;
-    o.Password.RequireUppercase = true;
-    o.Password.RequireNonAlphanumeric = false;
-});
-identity.AddEntityFrameworkStores<AuthDbContext>();
-identity.AddSignInManager();
+    options.User.RequireUniqueEmail = true;
 
-var signingKey = builder.Configuration["Jwt:SigningKey"] ?? throw new("Jwt:SigningKey missing");
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
+    options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = false;
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+})
+.AddEntityFrameworkStores<AuthDbContext>()
+.AddSignInManager()
+.AddDefaultTokenProviders();
+
+// JWT Auth
+var jwtKey = config["Jwt:SigningKey"] ?? throw new Exception("Jwt:SigningKey missing");
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+
+builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(o =>
     {
-        o.TokenValidationParameters = new()
+        o.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = key,
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            ClockSkew = TimeSpan.FromSeconds(30)
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = config["Jwt:Issuer"],
+            ValidAudience = config["Jwt:Audience"],
+            IssuerSigningKey = key
         };
     });
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<AuthDbContext>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerConfiguration();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "Branchly.Auth", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 var app = builder.Build();
 
-app.UseSwaggerConfiguration();
-app.UseHttpsRedirection();
-app.Use(async (ctx, next) =>
+if (app.Environment.IsDevelopment())
 {
-    try
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
     {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        ctx.Response.ContentType = "application/problem+json; charset=utf-8";
-        var payload = new
-        {
-            type = "about:blank",
-            title = "Unexpected error",
-            status = 500,
-            detail = app.Environment.IsDevelopment() ? ex.ToString() : "Internal error."
-        };
-        await ctx.Response.WriteAsJsonAsync(payload);
-    }
-});
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Branchly.Auth v1");
+        c.RoutePrefix = string.Empty; // Swagger abre em "/"
+    });
+}
+
+app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.Run();
+app.MapHealthChecks("/health");
 
-public partial class Program { }
+app.Run();
