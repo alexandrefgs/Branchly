@@ -1,41 +1,37 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.Builder;
 
 namespace Branchly.Auth.Extensions;
+
 public static class SwaggerConfig
 {
-    public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddSwaggerConfig(this IServiceCollection services)
     {
-        services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Branchly.Auth",
-                Version = "v1"
-            });
+            c.SwaggerDoc("v1", new() { Title = "Branchly.Auth", Version = "v1" });
 
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
             {
-                Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Description = "JWT Authorization header. Example: 'Bearer {token}'",
                 Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
                 Scheme = "bearer",
                 BearerFormat = "JWT"
             });
 
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
             {
                 {
-                    new OpenApiSecurityScheme
+                    new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference
+                        Reference = new Microsoft.OpenApi.Models.OpenApiReference
                         {
-                            Type = ReferenceType.SecurityScheme,
+                            Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
                             Id = "Bearer"
                         }
                     },
-                    Array.Empty<string>()
+                    new string[] {}
                 }
             });
         });
@@ -49,7 +45,7 @@ public static class SwaggerConfig
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Branchly.Auth v1");
-            c.RoutePrefix = string.Empty; // Swagger abre em "/"
+            c.RoutePrefix = string.Empty;
         });
 
         return app;
