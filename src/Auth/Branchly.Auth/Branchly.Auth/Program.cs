@@ -88,6 +88,11 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+var origins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? Array.Empty<string>();
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("default", p => p.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod());
+});
 
 var app = builder.Build();
 
