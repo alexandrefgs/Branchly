@@ -55,6 +55,26 @@ var app = builder.Build();
 
 app.UseSwaggerConfiguration();
 app.UseHttpsRedirection();
+app.Use(async (ctx, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        ctx.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        ctx.Response.ContentType = "application/problem+json; charset=utf-8";
+        var payload = new
+        {
+            type = "about:blank",
+            title = "Unexpected error",
+            status = 500,
+            detail = app.Environment.IsDevelopment() ? ex.ToString() : "Internal error."
+        };
+        await ctx.Response.WriteAsJsonAsync(payload);
+    }
+});
 app.UseAuthentication();
 app.UseAuthorization();
 
