@@ -125,4 +125,26 @@ public class AuthController(
         var ok = await auth.LogoutAsync(req.RefreshToken);
         return ok ? NoContent() : BadRequest();
     }
+
+    [AllowAnonymous]
+    [HttpPost("resend")]
+    public async Task<IActionResult> ResendVerification([FromBody] ResendVerificationRequest req)
+    {
+        var user = await users.FindByEmailAsync(req.Email);
+        if (user is null) return NoContent();
+        if (user.EmailConfirmed) return NoContent();
+
+        var token = await users.GenerateEmailConfirmationTokenAsync(user);
+        var verifyUrl = BuildUrl("/v1/auth/verify-email", new Dictionary<string, string?>
+        {
+            ["uid"] = user.Id,
+            ["token"] = token
+        });
+
+        await email.SendAsync(user.Email!, "Confirm your Branchly account",
+            $"<p>Click to confirm: <a href=\"{verifyUrl}\">Verify email</a></p>");
+
+        return NoContent();
+    }
+
 }
