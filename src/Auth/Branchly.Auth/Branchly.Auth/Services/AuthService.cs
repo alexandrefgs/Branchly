@@ -37,7 +37,8 @@ public class AuthService(
         var (access, exp) = tokens.CreateAccessToken(claims);
         var refresh = tokens.CreateRefreshToken();
 
-        db.RefreshTokens.Add(new RefreshToken {
+        db.RefreshTokens.Add(new RefreshToken
+        {
             UserId = user.Id,
             TokenHash = tokens.Hash(refresh),
             CreatedAt = DateTime.UtcNow,
@@ -64,7 +65,8 @@ public class AuthService(
         var (access, exp) = tokens.CreateAccessToken(claims);
         var newRefresh = tokens.CreateRefreshToken();
 
-        var newEntity = new RefreshToken {
+        var newEntity = new RefreshToken
+        {
             UserId = user.Id,
             TokenHash = tokens.Hash(newRefresh),
             CreatedAt = DateTime.UtcNow,
