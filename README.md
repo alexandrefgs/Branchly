@@ -86,8 +86,8 @@ Branchly.Auth comes with interactive API documentation via **Swagger UI**:
 ## 🚀 Roadmap
 
 - [x] Authentication API (JWT, RefreshTokens, Swagger)
-- [ ] Email verification
-- [ ] Forgot password
+- [x] Email verification
+- [x] Forgot password
 - [ ] User Profiles (handle, themes, avatar)
 - [ ] Links CRUD + shortlinks
 - [ ] Analytics dashboard
