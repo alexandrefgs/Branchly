@@ -1,34 +1,56 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace Branchly.Auth.Extensions
+public static class SwaggerConfig
 {
-    public static class SwaggerConfig
+    public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
     {
-        public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(c =>
         {
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(c =>
+            c.SwaggerDoc("v1", new OpenApiInfo
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                Title = "Branchly.Auth",
+                Version = "v1"
+            });
+
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                 {
-                    Title = "Branchly.Auth",
-                    Version = "v1"
-                });
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
             });
+        });
 
-            return services;
-        }
+        return services;
+    }
 
-        public static IApplicationBuilder UseSwaggerConfiguration(this IApplicationBuilder app)
+    public static IApplicationBuilder UseSwaggerConfiguration(this IApplicationBuilder app)
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Branchly.Auth v1");
-                c.RoutePrefix = string.Empty;
-            });
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Branchly.Auth v1");
+            c.RoutePrefix = string.Empty; // Swagger abre em "/"
+        });
 
-            return app;
-        }
+        return app;
     }
 }
