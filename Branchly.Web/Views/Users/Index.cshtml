@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Cadastrar Usuário";
+}
+
+<h2>Cadastrar Usuário</h2>
+
+<form id="createUserForm">
+    <div>
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" name="username" required />
+    </div>
+    <button type="submit">Cadastrar</button>
+</form>
+
+<div id="message" style="margin-top:10px;"></div>
+
+@section Scripts {
+    <script src="~/js/users.js"></script>
+}

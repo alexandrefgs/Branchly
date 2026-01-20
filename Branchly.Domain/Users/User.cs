@@ -11,7 +11,9 @@ namespace Branchly.Domain.Users;
 
 public sealed class User : AggregateRoot
 {
-    public Username Username { get; private set; }
+    public Username Username { get; private set; } = default!;
+
+    private User() { }
 
     private User(UserId id, Username username)
         : base(id.Value)
@@ -24,3 +26,4 @@ public sealed class User : AggregateRoot
         return new User(UserId.New(), username);
     }
 }
+
