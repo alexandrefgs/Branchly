@@ -5,7 +5,6 @@ using Branchly.Domain.Users.Repositories;
 using Branchly.Infrastructure.Persistence;
 using Branchly.Infrastructure.Persistence.Repositories;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,14 +34,20 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseAuthorization();
 
-app.MapStaticAssets();
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/Users");
+    return Task.CompletedTask;
+});
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Users}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Users}/{action=Index}/{id?}");
 
 app.Run();

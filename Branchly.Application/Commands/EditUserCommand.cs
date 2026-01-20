@@ -3,8 +3,9 @@ using System;
 
 namespace Branchly.Application.Commands
 {
-    public class CreateUserCommand : IRequest<Guid>
+    public class EditUserCommand : IRequest<Guid>
     {
+        public Guid Id { get; set; }
         public string Username { get; set; }
     }
 }

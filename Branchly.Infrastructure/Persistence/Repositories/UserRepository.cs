@@ -1,33 +1,41 @@
 ﻿using Branchly.Domain.Users;
 using Branchly.Domain.Users.Repositories;
-using Branchly.Domain.Users.ValueObjects;
+using Branchly.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Branchly.Infrastructure.Persistence.Repositories;
-
-public sealed class UserRepository : IUserRepository
+namespace Branchly.Infrastructure.Persistence.Repositories
 {
-    private readonly BranchlyDbContext _context;
-
-    public UserRepository(BranchlyDbContext context)
+    public class UserRepository : IUserRepository
     {
-        _context = context;
-    }
+        private readonly BranchlyDbContext _context;
 
-    public async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken = default)
-    {
-        return await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == id.Value, cancellationToken);
-    }
+        public UserRepository(BranchlyDbContext context)
+        {
+            _context = context;
+        }
 
-    public async Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
-    {
-        return await _context.Users
-            .FirstOrDefaultAsync(u => u.Username.Value == username.ToLower(), cancellationToken);
-    }
+        public async Task<User?> GetByIdAsync(Guid id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
 
-    public async Task AddAsync(User user, CancellationToken cancellationToken = default)
-    {
-        await _context.Users.AddAsync(user, cancellationToken);
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.Users.AsNoTracking().ToListAsync();
+        }
+
+        public async Task AddAsync(User user)
+        {
+            await _context.Users.AddAsync(user);
+        }
+
+        public Task RemoveAsync(User user)
+        {
+            _context.Users.Remove(user);
+            return Task.CompletedTask;
+        }
     }
 }
